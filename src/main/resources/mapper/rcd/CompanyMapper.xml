@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mao.ky.mapper.rcd.CompanyMapper">
+
+    <select id="getAllCompany" resultType="com.mao.ky.entity.rcd.company.CompanyDo">
+        SELECT `id`,`name`,`code` FROM rcd_company
+    </select>
+
+    <select id="getCompanyById" parameterType="java.lang.Long" resultType="com.mao.ky.entity.rcd.company.CompanyDo">
+        SELECT * FROM rcd_company WHERE `del` = FALSE AND `id` = #{id}
+    </select>
+
+    <insert id="saveCompany" parameterType="com.mao.ky.entity.rcd.company.CompanyDo">
+        INSERT INTO rcd_company(`id`,`name`,`intro`,`phone`,`email`,`web`,`province`,
+        `city`,`area`,`address`,`create`,`creator`,`update`,`updater`) VALUE
+        (#{id},#{name},#{intro},#{phone},#{email},#{web},#{province},#{city},#{area},
+        #{address},#{create},#{creator},#{update},#{updater})
+    </insert>
+
+    <update id="updateCompany" parameterType="com.mao.ky.entity.rcd.company.CompanyDo">
+        UPDATE rcd_company SET `name` = #{name},`intro` = #{intro},`phone` = #{phone},`email` = #{email},
+        `web` = #{web},`province` = #{province},`city` = #{city},`area` = #{area},
+        `address` = #{address},`update` = #{update},`updater` = #{updater}
+        WHERE `del` = FALSE AND `id` = #{id}
+    </update>
+
+    <update id="deleteCompany" parameterType="java.lang.Long">
+        UPDATE rcd_company SET `del` = TRUE WHERE `id` = #{id}
+    </update>
+
+</mapper>

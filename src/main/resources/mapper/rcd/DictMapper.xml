@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mao.ky.mapper.rcd.DictMapper">
+
+    <select id="getAllProvince" resultType="com.mao.ky.entity.rcd.dict.Province">
+        SELECT * FROM rcd_dict_province_city_area
+    </select>
+
+    <select id="getAllDictType" resultType="com.mao.ky.entity.rcd.dict.DictType">
+        SELECT * FROM rcd_dict_type
+    </select>
+
+    <select id="getAllDict" resultType="com.mao.ky.entity.rcd.dict.DictDo">
+        SELECT * FROM rcd_dict WHERE `del` = FALSE
+    </select>
+
+    <insert id="saveDict" parameterType="com.mao.ky.entity.rcd.dict.DictDo">
+        INSERT INTO rcd_dict(`id`,`pid`,`type`,`name`,`create`,`creator`,`update`,`updater`) VALUE
+        (#{id},#{pid},#{type},#{name},#{create},#{creator},#{update},#{updater})
+    </insert>
+
+    <update id="updateDict" parameterType="com.mao.ky.entity.rcd.dict.DictDo">
+        UPDATE rcd_dict SET `name` = #{name},`update` = #{update},`updater` = #{updater}
+        WHERE `del` = FALSE AND `id` = #{id}
+    </update>
+
+    <update id="delDict" parameterType="java.lang.Long">
+        UPDATE rcd_dict SET `del` = TRUE WHERE `id` = #{id}
+    </update>
+
+</mapper>

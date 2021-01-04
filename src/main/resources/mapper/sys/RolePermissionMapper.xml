@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mao.ky.mapper.sys.RolePermissionMapper">
+
+    <select id="getPermissionByRoleId" parameterType="java.lang.Long" resultType="java.lang.String">
+        SELECT b.code
+        FROM sys_role_permission AS a
+        LEFT JOIN sys_permission AS b ON a.per_id = b.id
+        WHERE a.del = FALSE AND a.role_id = #{id}
+    </select>
+
+    <select id="getPermissionIdByRoleId" parameterType="java.lang.Long" resultType="java.lang.Long">
+        SELECT per_id FROM sys_role_permission WHERE `del` = FALSE AND `role_id` = #{id}
+    </select>
+
+    <select id="getRoleById" parameterType="java.lang.Long" resultType="com.mao.ky.entity.sys.role.RoleDo">
+        SELECT * FROM sys_role WHERE `id` = #{id} AND `del` = FALSE
+    </select>
+
+    <select id="getRolesByNameLike" parameterType="java.lang.String" resultType="com.mao.ky.entity.sys.role.RoleDo">
+        SELECT * FROM sys_role WHERE `del` = FALSE AND LOCATE(#{keyword},`name`) > 0
+    </select>
+
+    <select id="getRoles" parameterType="com.mao.ky.entity.Query" resultType="com.mao.ky.entity.sys.role.RoleDo">
+        SELECT * FROM sys_role WHERE `del` = FALSE ORDER BY `id` ASC LIMIT #{start},#{size}
+    </select>
+
+    <select id="getRolesTotal" parameterType="com.mao.ky.entity.Query" resultType="java.lang.Integer">
+        SELECT COUNT(`id`) FROM sys_role WHERE `del` = FALSE
+    </select>
+
+    <select id="checkExistRole" parameterType="java.lang.String" resultType="java.lang.Integer">
+        SELECT COUNT(`id`) FROM sys_role WHERE `del` = FALSE AND `name` = #{name}
+    </select>
+
+    <insert id="saveRole" parameterType="com.mao.ky.entity.sys.role.RoleDo">
+        SELECT add_role(#{id},#{code},#{name},#{intro},#{creator})
+    </insert>
+
+    <update id="updateRole" parameterType="com.mao.ky.entity.sys.role.RoleDo">
+        UPDATE sys_role SET `code` = #{code},`name` = #{name},`intro` = #{intro},
+        `update` = #{update},`updater` = #{updater} WHERE `id` = #{id}
+    </update>
+
+    <update id="increasePermissions">
+        UPDATE sys_role_permission SET `del` = FALSE WHERE role_id = #{role} AND per_id IN
+        <foreach collection="list" item="per" separator="," open="(" close=")">
+            #{per}
+        </foreach>
+    </update>
+
+    <update id="decreasePermissions">
+        UPDATE sys_role_permission SET `del` = TRUE WHERE role_id = #{role} AND per_id IN
+        <foreach collection="list" item="per" separator="," open="(" close=")">
+            #{per}
+        </foreach>
+    </update>
+
+    <update id="deleteRole" parameterType="java.lang.Long">
+        UPDATE sys_role SET `del` = TRUE WHERE `id` = #{id}
+    </update>
+
+    <update id="deleteRolePermissions" parameterType="java.lang.Long">
+        UPDATE sys_role_permission SET `del` = TRUE WHERE role_id = #{id}
+    </update>
+
+    <select id="getPermissions" resultType="com.mao.ky.entity.sys.role.PermissionDo">
+        SELECT * FROM sys_permission
+    </select>
+
+</mapper>

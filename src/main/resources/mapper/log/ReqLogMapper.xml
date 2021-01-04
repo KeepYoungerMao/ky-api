@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mao.ky.mapper.log.ReqLogMapper">
+
+    <insert id="saveRequestLog" parameterType="com.mao.ky.entity.log.req.ReqLog"
+            useGeneratedKeys="true" keyColumn="id" keyProperty="id">
+        INSERT INTO sys_request_log(request_type,data_type,`client`,`user`,`ip`,`uri`,`method`,`params`,
+        `body`,`status`,`result`,`date`)
+        VALUE(#{request_type},#{data_type},#{client},#{user},#{ip},#{uri},#{method},#{params},
+        #{body},#{status},#{result},#{date})
+    </insert>
+
+    <select id="getRequestLogs" parameterType="com.mao.ky.entity.log.req.LogParam"
+            resultType="com.mao.ky.entity.log.req.ReqLog">
+        SELECT `id`,`request_type`,`data_type`,`client`,`user`,`status`,`date`,`ip`,`uri`
+        FROM sys_request_log WHERE `request_type` > 0
+        <if test="null != type and type > 0">
+            AND `request_type` = #{type}
+        </if>
+        <if test="null != data and data > 0">
+            AND `data_type` = #{data}
+        </if>
+        <if test="null != user and user != ''">
+            AND `user` = #{user}
+        </if>
+        <if test="null != start and start > 0">
+            AND `date` &gt; #{start}
+        </if>
+        <if test="null != end and end > 0">
+            AND `date` &lt; #{end}
+        </if>
+        ORDER BY `date` DESC LIMIT #{pre},#{size}
+    </select>
+
+    <select id="getRequestLogsCount" parameterType="com.mao.ky.entity.log.req.LogParam" resultType="java.lang.Long">
+        SELECT COUNT(`id`) FROM sys_request_log WHERE `request_type` > 0
+        <if test="null != type and type > 0">
+            AND `request_type` = #{type}
+        </if>
+        <if test="null != data and data > 0">
+            AND `data_type` = #{data}
+        </if>
+        <if test="null != user and user != ''">
+            AND `user` = #{user}
+        </if>
+        <if test="null != start and start > 0">
+            AND `date` &gt; #{start}
+        </if>
+        <if test="null != end and end > 0">
+            AND `date` &lt; #{end}
+        </if>
+    </select>
+
+    <select id="getRequestLogById" parameterType="java.lang.Long" resultType="com.mao.ky.entity.log.req.ReqLog">
+        SELECT * FROM sys_request_log WHERE `id` = #{id}
+    </select>
+
+</mapper>

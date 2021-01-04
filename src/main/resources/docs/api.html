@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>KEEP YOUNGER API</title>
+</head>
+<body>
+<ul id="apis"></ul>
+<div class="show">
+    <h3>API DESCRIPTION:</h3>
+    <div>
+        <span>name:</span>
+        <span class="value" id="api-name"></span>
+    </div>
+    <div>
+        <span>uri:</span>
+        <span class="value" id="api-uri"></span>
+    </div>
+    <div>
+        <span>method:</span>
+        <span class="value" id="api-method"></span>
+    </div>
+    <div>
+        <span>description:</span>
+        <span class="value" id="api-description"></span>
+    </div>
+</div>
+</body>
+<style>
+    ul {
+        padding: 10px;
+        margin-left: 10px;
+    }
+    ul li {
+        padding: 5px;
+    }
+    ul li span {
+        margin-left: 5px;
+    }
+    .blue {
+        color: blue;
+        font-weight: bold;
+    }
+    .show {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        width: 400px;
+        height: 250px;
+        border: 1px solid #666666;
+        padding: 5px;
+    }
+    .value {
+        margin-left: 10px;
+        font-weight: bold;
+    }
+</style>
+<script>
+    const apis = [
+        {
+            name: 'system',
+            api: '/api/sys',
+            description: '',
+            children: [
+                {
+                    name: 'clients',
+                    api: '/clients',
+                    description: 'get all clients data',
+                    method: 'GET'
+                },{
+                    name: 'current user',
+                    api: '/user',
+                    description: 'get user data which had login this system.',
+                    method: 'GET'
+                },{
+                    name: 'user',
+                    api: '/user/{username}',
+                    description: 'get user data by username.',
+                    method: 'GET'
+                },{
+                    name: 'check username',
+                    api: '/user/{username}/check',
+                    description: 'check the username if existed this system',
+                    method: 'GET'
+                },{
+                    name: 'users',
+                    api: '/users',
+                    description: 'get user list data, support search by keyword and page-search.',
+                    method: 'GET'
+                },{
+                    name: 'new user',
+                    api: '/user',
+                    description: 'create a new user.',
+                    method: 'PUT'
+                },{
+                    name: 'edit user',
+                    api: '/user',
+                    description: 'update user data.',
+                    method: 'POST'
+                },{
+                    name: 'edit user password',
+                    api: '/user/password',
+                    description: 'edit user\'s password.',
+                    method: 'POST'
+                },{
+                    name: 'delete user',
+                    api: '/user/{username}',
+                    description: 'delete a user.',
+                    method: 'DELETE'
+                }
+            ]
+        }
+    ];
+    let nameSpan = document.getElementById('api-name');
+    let methodSpan = document.getElementById('api-method');
+    let uriSpan = document.getElementById('api-uri');
+    let descriptionSpan = document.getElementById('api-description');
+    let ulBox = document.getElementById('apis');
+    for (let i = 0; i < apis.length; i++) {
+        let liBox = li(apis[i]);
+        let children = apis[i].children;
+        if (children && children.length > 0) {
+            let ulSubBox = ul();
+            for (let j = 0; j < children.length; j++) {
+                let liSubBox = li(children[j],i,j);
+                ulSubBox.appendChild(liSubBox);
+            }
+            liBox.appendChild(ulSubBox);
+        }
+        ulBox.appendChild(liBox);
+    }
+
+    function ul() {
+        return document.createElement('ul');
+    }
+
+    function li(api,i,j) {
+        let li = document.createElement('li');
+        li.appendChild(a(api,i,j));
+        return li;
+    }
+
+    function a(api,i,j) {
+        let a = document.createElement('a');
+        a.setAttribute('href',api.method ? 'javascript: show('+ i + ',' + j +')' : '#');
+        a.appendChild(span(api.name));
+        a.appendChild(span('['));
+        a.appendChild(span(api.api, 'blue'));
+        a.appendChild(span(']'));
+        return a;
+    }
+
+    function span(name, className) {
+        let span = document.createElement('span');
+        span.innerText = name;
+        if (className)
+            span.className = className;
+        return span;
+    }
+
+    function show(i,j) {
+        nameSpan.innerText = apis[i].children[j].name;
+        uriSpan.innerText = apis[i].api + apis[i].children[j].api;
+        methodSpan.innerText = apis[i].children[j].method;
+        descriptionSpan.innerText = apis[i].children[j].description;
+    }
+</script>
+</html>

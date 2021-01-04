@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mao.ky.mapper.rcd.DeptMapper">
+
+    <select id="getAllDept" resultType="com.mao.ky.entity.rcd.dept.DeptDo">
+        SELECT `id`,`pid`,`cid`,`name`,`code` FROM rcd_department WHERE `del` = FALSE
+    </select>
+
+    <select id="getDeptById" parameterType="java.lang.Long" resultType="com.mao.ky.entity.rcd.dept.DeptDo">
+        SELECT * FROM rcd_department WHERE `del` = FALSE AND `id` = #{id}
+    </select>
+
+    <insert id="saveDept" parameterType="com.mao.ky.entity.rcd.dept.DeptDo">
+        INSERT INTO rcd_department(`id`,`pid`,`cid`,`name`,`code`,`phone`,
+        `intro`,`time`,`remark`,`create`,`creator`,`update`,`updater`) VALUE
+        (#{id},#{pid},#{cid},#{name},#{code},#{phone},#{intro},#{time},
+        #{remark},#{create},#{creator},#{update},#{updater})
+    </insert>
+
+    <update id="updateDept" parameterType="com.mao.ky.entity.rcd.dept.DeptDo">
+        UPDATE rcd_department SET `pid` = #{pid},`name` = #{name},`code` = #{code},`phone` = #{phone},
+        `intro` = #{intro},`time` = #{time},`remark` = #{remark},`update` = #{update},`updater` = #{updater}
+        WHERE `del` = FALSE AND `id` = #{id}
+    </update>
+
+    <update id="deleteDept" parameterType="java.lang.Long">
+        UPDATE rcd_department SET `del` = TRUE WHERE `id` = #{id}
+    </update>
+
+</mapper>

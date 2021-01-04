@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mao.ky.mapper.sys.UserMapper">
+
+    <select id="getUserByUsername" parameterType="java.lang.String" resultType="com.mao.ky.entity.sys.user.UserDo">
+        SELECT a.*,b.name AS role_name,c.name AS client_name
+        FROM sys_user AS a
+        LEFT JOIN sys_role AS b ON a.role = b.id
+        LEFT JOIN sys_client AS c ON a.client = c.id
+        WHERE a.username = #{username} AND a.del = FALSE
+    </select>
+
+    <select id="getUserByUsernameLike" parameterType="java.lang.String"
+            resultType="com.mao.ky.entity.sys.user.UserDo">
+        SELECT a.*,b.name AS role_name,c.name AS client_name
+        FROM sys_user AS a
+        LEFT JOIN sys_role AS b ON a.role = b.id
+        LEFT JOIN sys_client AS c ON a.client = c.id
+        WHERE LOCATE(#{username},a.username) > 0 AND a.del = FALSE
+    </select>
+
+    <select id="getUsers" parameterType="com.mao.ky.entity.Query" resultType="com.mao.ky.entity.sys.user.UserDo">
+        SELECT a.*,b.name AS role_name,c.name AS client_name
+        FROM sys_user AS a
+        LEFT JOIN sys_role AS b ON a.role = b.id
+        LEFT JOIN sys_client AS c ON a.client = c.id
+        WHERE a.del = FALSE
+        ORDER BY `id` LIMIT #{start},#{size}
+    </select>
+
+    <select id="getUsersTotal" parameterType="com.mao.ky.entity.Query" resultType="java.lang.Integer">
+        SELECT COUNT(`id`) FROM sys_user WHERE `del` = FALSE
+    </select>
+
+    <select id="checkExistUsername" parameterType="java.lang.String" resultType="java.lang.Integer">
+        SELECT COUNT(`id`) FROM sys_user WHERE `del` = FALSE AND `username` = #{username}
+    </select>
+
+    <insert id="saveUser" parameterType="com.mao.ky.entity.sys.user.UserDo">
+        INSERT INTO sys_user(`id`,`username`,`password`,`expired`,`locked`,`enabled`,
+        `client`,`role`,`avatar`,`create`,`creator`,`update`,`updater`) VALUE
+        (#{id},#{username},#{password},#{expired},#{locked},#{enabled},#{client},
+        #{role},#{avatar},#{create},#{creator},#{update},#{updater})
+    </insert>
+
+    <update id="updateUser" parameterType="com.mao.ky.entity.sys.user.UserDo">
+        UPDATE sys_user SET `expired` = #{expired},`locked` = #{locked},`enabled` = #{enabled},
+        `client` = #{client},`role` = #{role},`avatar` = #{avatar},`update` = #{update},`updater` = #{updater}
+        WHERE `id` = #{id}
+    </update>
+
+    <update id="updateUserPass" parameterType="com.mao.ky.entity.sys.user.UserPass">
+        UPDATE sys_user SET `password` = #{new_pass} WHERE `username` = #{username}
+    </update>
+
+    <update id="deleteUser" parameterType="java.lang.String">
+        UPDATE sys_user SET `del` = TRUE WHERE `username` = #{username}
+    </update>
+
+</mapper>
